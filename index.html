@@ -3,839 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uzair Pathan — Digital Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+    <title>Uzair Pathan — Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg:        #020c12;
-            --bg2:       #041520;
-            --bg3:       #072030;
-            --bg4:       #0a2d40;
-            --border:    #0d3d55;
-            --border-h:  #00e5ff;
-            --text:      #e0f7ff;
-            --text-muted:#7ec8d8;
-            --text-dim:  #2a5f72;
-            --c1:        #00e5ff;
-            --c2:        #00ff9d;
-            --c3:        #0af5c0;
-            --glow1:     rgba(0,229,255,0.18);
-            --glow2:     rgba(0,255,157,0.14);
-            --nav-bg:    rgba(2,12,18,0.92);
-            --card-bg:   #041828;
+            --bg: #020c12; --bg2: #041520; --border: #0d3d55; --text: #e0f7ff;
+            --text-muted:#7ec8d8; --text-dim: #2a5f72; --c1: #00e5ff;
+            --c2: #00ff9d; --glow1: rgba(0,229,255,0.18); --card-bg: #041828;
         }
         :root[data-theme="light"] {
-            --bg:        #e8f9fc;
-            --bg2:       #d0f2f8;
-            --bg3:       #b8eaf5;
-            --bg4:       #9de0ef;
-            --border:    #7acde3;
-            --border-h:  #007a99;
-            --text:      #022635;
-            --text-muted:#0a4d63;
-            --text-dim:  #5aabb8;
-            --c1:        #006b85;
-            --c2:        #007a50;
-            --c3:        #007060;
-            --glow1:     rgba(0,107,133,0.12);
-            --glow2:     rgba(0,122,80,0.10);
-            --nav-bg:    rgba(232,249,252,0.95);
-            --card-bg:   #ffffff;
+            --bg: #e8f9fc; --bg2: #d0f2f8; --border: #7acde3; --text: #022635;
+            --text-muted:#0a4d63; --text-dim: #5aabb8; --c1: #006b85;
+            --c2: #007a50; --card-bg: #ffffff;
         }
 
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; transition: 0.3s; }
+        nav { position: fixed; top: 0; width: 100%; height: 70px; background: rgba(2, 12, 18, 0.8); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; padding: 0 5%; z-index: 1000; border-bottom: 1px solid var(--border); }
+        .nav-logo { font-family: 'Syne'; font-weight: 800; font-size: 1.5rem; color: var(--c1); }
+        
+        section { padding: 100px 5%; max-width: 1200px; margin: 0 auto; }
+        .section-title { font-family: 'Syne'; font-size: 2.5rem; margin-bottom: 10px; background: linear-gradient(to right, var(--c1), var(--c2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section-line { width: 60px; height: 4px; background: var(--c1); margin-bottom: 40px; border-radius: 2px; }
 
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.65;
-            overflow-x: hidden;
-            transition: background .35s, color .35s;
-        }
+        /* Gallery Grid */
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        .cert-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: 15px; overflow: hidden; transition: 0.3s; cursor: pointer; }
+        .cert-item:hover { transform: translateY(-10px); border-color: var(--c1); box-shadow: 0 10px 30px var(--glow1); }
+        
+        .cert-img-box { position: relative; width: 100%; height: 200px; background: var(--bg2); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .cert-img-box img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* Fallback badge if image is missing */
+        .cert-fallback { position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: var(--bg2); border: 2px dashed var(--border); }
+        .cert-img-box.no-img img { display: none; }
+        .cert-img-box.no-img .cert-fallback { display: flex; }
+        .cert-fallback i { font-size: 2rem; margin-bottom: 10px; opacity: 0.5; }
 
-        .blob {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(100px);
-            pointer-events: none;
-            z-index: 0;
-            opacity: .45;
-            transition: opacity .35s;
-        }
-        .blob-1 { width: 500px; height: 500px; background: radial-gradient(circle, #00e5ff55, transparent 70%); top: -150px; left: -100px; animation: drift1 18s ease-in-out infinite alternate; }
-        .blob-2 { width: 400px; height: 400px; background: radial-gradient(circle, #00ff9d44, transparent 70%); bottom: 0; right: -80px; animation: drift2 22s ease-in-out infinite alternate; }
-        .blob-3 { width: 300px; height: 300px; background: radial-gradient(circle, #0af5c033, transparent 70%); top: 50%; left: 40%; animation: drift3 15s ease-in-out infinite alternate; }
-        @keyframes drift1 { to { transform: translate(80px, 60px); } }
-        @keyframes drift2 { to { transform: translate(-60px, -80px); } }
-        @keyframes drift3 { to { transform: translate(-40px, 50px); } }
-        [data-theme="light"] .blob { opacity: .25; }
+        .cert-info { padding: 20px; text-align: center; border-top: 1px solid var(--border); }
+        .cert-info h3 { font-size: 1rem; margin-bottom: 5px; }
+        .cert-info p { font-size: 0.8rem; color: var(--text-muted); }
 
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image:
-                linear-gradient(var(--border) 1px, transparent 1px),
-                linear-gradient(90deg, var(--border) 1px, transparent 1px);
-            background-size: 60px 60px;
-            opacity: .18;
-            pointer-events: none;
-            z-index: 0;
-        }
+        /* Lightbox */
+        .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .lightbox.active { display: flex; }
+        .lightbox img { max-width: 90%; max-height: 80vh; border-radius: 10px; box-shadow: 0 0 50px var(--c1); }
+        .close-lb { position: absolute; top: 30px; right: 40px; color: white; font-size: 40px; cursor: pointer; }
 
-        nav {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            background: var(--nav-bg);
-            backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--border);
-            z-index: 999;
-            padding: 0 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 64px;
-        }
-        .nav-logo {
-            font-family: 'Syne', sans-serif;
-            font-size: 1.4rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--c1), var(--c2));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: 2px;
-        }
-        .nav-links { display: flex; gap: 32px; list-style: none; }
-        .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.88rem;
-            font-weight: 500;
-            letter-spacing: .5px;
-            position: relative;
-            transition: color .2s;
-        }
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -3px; left: 0;
-            width: 0; height: 1.5px;
-            background: linear-gradient(90deg, var(--c1), var(--c2));
-            transition: width .25s;
-        }
-        .nav-links a:hover { color: var(--c1); }
-        .nav-links a:hover::after { width: 100%; }
-        .theme-toggle {
-            background: var(--bg3);
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            padding: 7px 16px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 0.82rem;
-            font-family: 'DM Sans', sans-serif;
-            transition: .2s;
-        }
-        .theme-toggle:hover { border-color: var(--c1); color: var(--c1); box-shadow: 0 0 12px var(--glow1); }
+        .btn { padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: 0.3s; display: inline-block; }
+        .btn-primary { background: var(--c1); color: #000; }
+        .btn-outline { border: 1.5px solid var(--c1); color: var(--c1); margin-left: 10px; }
 
-        section {
-            position: relative;
-            z-index: 1;
-            padding: 110px 40px 70px;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-        section#home { padding-top: 160px; text-align: center; }
-
-        h2.section-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 2.4rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--c1) 20%, var(--c2) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
-        }
-        .section-line {
-            width: 70px; height: 3px;
-            background: linear-gradient(90deg, var(--c1), var(--c2));
-            border-radius: 2px;
-            margin: 0 0 52px;
-            box-shadow: 0 0 14px var(--glow1);
-        }
-
-        .home-chip {
-            display: inline-block;
-            border: 1px solid var(--border-h);
-            border-radius: 30px;
-            padding: 5px 18px;
-            font-size: 0.82rem;
-            color: var(--c1);
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-bottom: 24px;
-            animation: fadeUp .6s ease both;
-            background: rgba(0,229,255,0.06);
-        }
-        .home-name {
-            font-family: 'Syne', sans-serif;
-            font-size: clamp(3rem, 7vw, 5rem);
-            font-weight: 800;
-            line-height: 1.05;
-            background: linear-gradient(135deg, var(--c1) 0%, var(--c3) 50%, var(--c2) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: fadeUp .7s .1s ease both;
-            filter: drop-shadow(0 0 30px rgba(0,229,255,0.3));
-        }
-        .home-sub {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            margin: 14px 0 28px;
-            font-weight: 300;
-            animation: fadeUp .7s .2s ease both;
-            letter-spacing: .5px;
-        }
-        .home-desc {
-            max-width: 600px;
-            margin: 0 auto 44px;
-            font-size: 1.05rem;
-            color: var(--text-muted);
-            animation: fadeUp .7s .3s ease both;
-            font-weight: 300;
-        }
-        .home-btns {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-            flex-wrap: wrap;
-            animation: fadeUp .7s .4s ease both;
-        }
-        .btn {
-            padding: 13px 32px;
-            border-radius: 10px;
-            font-size: 0.93rem;
-            font-weight: 600;
-            font-family: 'DM Sans', sans-serif;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            transition: .25s;
-            letter-spacing: .5px;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, var(--c1), var(--c2));
-            color: #021820;
-            border: none;
-            box-shadow: 0 0 24px var(--glow1), 0 0 16px var(--glow2);
-        }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 40px var(--glow1), 0 0 28px var(--glow2); }
-        .btn-outline {
-            background: transparent;
-            color: var(--c1);
-            border: 1.5px solid var(--c1);
-        }
-        .btn-outline:hover { background: rgba(0,229,255,0.08); box-shadow: 0 0 22px var(--glow1); transform: translateY(-2px); }
-
-        .profile-wrap {
-            margin: 0 auto 50px;
-            width: 180px;
-            animation: fadeUp .7s .5s ease both;
-            position: relative;
-        }
-        .profile-wrap::before {
-            content: '';
-            position: absolute;
-            inset: -6px;
-            border-radius: 50%;
-            background: conic-gradient(var(--c1), var(--c2), var(--c3), var(--c1));
-            animation: spin 6s linear infinite;
-        }
-        .profile-wrap::after {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            border-radius: 50%;
-            background: var(--bg);
-        }
-        .profile-wrap img {
-            width: 100%;
-            border-radius: 50%;
-            position: relative;
-            z-index: 1;
-            display: block;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .home-stats {
-            display: flex;
-            gap: 40px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 60px;
-            animation: fadeUp .7s .55s ease both;
-        }
-        .stat-item { text-align: center; }
-        .stat-num {
-            font-family: 'Syne', sans-serif;
-            font-size: 2rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--c1), var(--c2));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .stat-label { font-size: 0.78rem; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; margin-top: 4px; }
-
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 48px;
-            align-items: start;
-        }
-        @media(max-width:720px){ .about-grid { grid-template-columns: 1fr; } }
-        .about-text p { color: var(--text-muted); margin-bottom: 16px; font-size: 1.03rem; font-weight: 300; }
-        .info-list { list-style: none; margin-top: 24px; }
-        .info-list li {
-            padding: 11px 0;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.95rem;
-            display: flex;
-            gap: 14px;
-        }
-        .info-list li span.label { color: var(--text-dim); min-width: 110px; font-size: 0.85rem; letter-spacing: .5px; }
-        .info-list li span.val { color: var(--text); }
-        .cards-mini { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-        .mini-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 22px 18px;
-            transition: .3s;
-            position: relative;
-            overflow: hidden;
-        }
-        .mini-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; height: 2px;
-            background: linear-gradient(90deg, var(--c1), var(--c2));
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: .3s;
-        }
-        .mini-card:hover::before { transform: scaleX(1); }
-        .mini-card:hover { border-color: var(--c1); transform: translateY(-4px); box-shadow: 0 8px 30px var(--glow1); }
-        .mini-card .icon { font-size: 1.5rem; margin-bottom: 10px; }
-        .mini-card h4 { font-family: 'Syne', sans-serif; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--c1); margin-bottom: 6px; }
-        .mini-card p { color: var(--text-muted); font-size: 0.86rem; font-weight: 300; }
-
-        .ach-tabs { display: flex; gap: 10px; margin-bottom: 38px; flex-wrap: wrap; }
-        .ach-tab {
-            padding: 8px 22px;
-            border-radius: 30px;
-            border: 1px solid var(--border);
-            background: transparent;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 0.87rem;
-            font-family: 'DM Sans', sans-serif;
-            transition: .2s;
-        }
-        .ach-tab.active, .ach-tab:hover { border-color: var(--c1); color: var(--c1); background: rgba(0,229,255,0.06); box-shadow: 0 0 12px var(--glow1); }
-        .ach-panel { display: none; }
-        .ach-panel.active { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
-
-        .ach-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 26px 22px;
-            transition: .3s;
-            position: relative;
-            overflow: hidden;
-        }
-        .ach-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(0,229,255,0.04), rgba(0,255,157,0.02));
-            opacity: 0;
-            transition: .3s;
-        }
-        .ach-card:hover::before { opacity: 1; }
-        .ach-card::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0; right: 0; height: 2px;
-            background: linear-gradient(90deg, var(--c1), var(--c2));
-            transform: scaleX(0);
-            transition: .35s;
-            transform-origin: left;
-        }
-        .ach-card:hover::after { transform: scaleX(1); }
-        .ach-card:hover { border-color: var(--c1); transform: translateY(-5px); box-shadow: 0 12px 40px var(--glow1); }
-        .ach-badge {
-            display: inline-block;
-            background: rgba(0,229,255,0.08);
-            color: var(--c2);
-            font-size: 0.7rem;
-            padding: 3px 12px;
-            border-radius: 20px;
-            border: 1px solid rgba(0,255,157,0.25);
-            margin-bottom: 13px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .ach-card h3 { font-family: 'Syne', sans-serif; font-size: 1rem; color: var(--text); margin-bottom: 9px; }
-        .ach-card p { font-size: 0.88rem; color: var(--text-muted); font-weight: 300; }
-
-        .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 24px; }
-        .proj-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 30px 26px;
-            transition: .3s;
-            position: relative;
-            overflow: hidden;
-        }
-        .proj-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; height: 2px;
-            background: linear-gradient(90deg, var(--c1), var(--c2));
-            transform: scaleX(0);
-            transition: .35s;
-            transform-origin: left;
-        }
-        .proj-card:hover::before { transform: scaleX(1); }
-        .proj-num { font-family: 'Syne', sans-serif; font-size: 3rem; font-weight: 800; color: var(--border); line-height: 1; margin-bottom: 10px; transition: .3s; }
-        .proj-card:hover .proj-num { color: rgba(0,229,255,0.2); }
-        .proj-card:hover { border-color: var(--c1); transform: translateY(-5px); box-shadow: 0 16px 50px var(--glow1); }
-        .proj-tag {
-            display: inline-block;
-            background: rgba(0,229,255,0.07);
-            color: var(--c1);
-            font-size: 0.7rem;
-            padding: 3px 12px;
-            border-radius: 20px;
-            border: 1px solid rgba(0,229,255,0.2);
-            margin-bottom: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .proj-card h3 { font-family: 'Syne', sans-serif; font-size: 1.08rem; color: var(--text); margin-bottom: 12px; }
-        .proj-card p { color: var(--text-muted); font-size: 0.91rem; margin-bottom: 20px; line-height: 1.75; font-weight: 300; }
-        .tech-row { display: flex; flex-wrap: wrap; gap: 7px; }
-        .tech-pill { background: var(--bg3); color: var(--text-muted); font-size: 0.74rem; padding: 3px 11px; border-radius: 20px; border: 1px solid var(--border); }
-
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
-        .cert-item {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            overflow: hidden;
-            transition: .3s;
-            cursor: pointer;
-            position: relative;
-        }
-        .cert-item::after {
-            content: '🔍 View';
-            position: absolute;
-            inset: 0;
-            background: rgba(0,229,255,0.12);
-            color: var(--c1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            font-weight: 600;
-            opacity: 0;
-            transition: .25s;
-        }
-        .cert-item:hover::after { opacity: 1; }
-        .cert-item:hover { border-color: var(--c1); transform: scale(1.035); box-shadow: 0 10px 35px var(--glow1); }
-        .cert-item img { width: 100%; height: 178px; object-fit: cover; display: block; }
-        .cert-label { padding: 14px 16px; font-size: 0.92rem; color: var(--text); background: var(--bg3); border-top: 1px solid var(--border); }
-
-        .lightbox {
-            position: fixed; inset: 0;
-            background: rgba(2,12,18,0.97);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            padding: 24px;
-        }
-        .lightbox.open { display: flex; }
-        .lightbox img { max-width: 90vw; max-height: 90vh; border: 2px solid var(--c1); border-radius: 14px; box-shadow: 0 0 60px var(--glow1); }
-        .lb-close { position: absolute; top: 24px; right: 36px; font-size: 42px; color: var(--text-muted); cursor: pointer; line-height: 1; transition: .2s; }
-        .lb-close:hover { color: var(--c1); }
-
-        .contact-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
-        @media(max-width:720px){ .contact-wrap { grid-template-columns: 1fr; } }
-        .contact-info h3 { font-family: 'Syne', sans-serif; font-size: 1.5rem; color: var(--text); margin-bottom: 14px; }
-        .contact-info p { color: var(--text-muted); margin-bottom: 30px; font-size: 1rem; font-weight: 300; }
-        .contact-items { list-style: none; }
-        .contact-items li { display: flex; align-items: center; gap: 16px; padding: 13px 0; border-bottom: 1px solid var(--border); font-size: 0.93rem; color: var(--text-muted); }
-        .contact-items li .ci { font-size: 1.1rem; }
-        .contact-form { display: flex; flex-direction: column; gap: 14px; }
-        .contact-form input,
-        .contact-form textarea {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 13px 18px;
-            color: var(--text);
-            font-size: 0.93rem;
-            font-family: 'DM Sans', sans-serif;
-            transition: border .2s, box-shadow .2s;
-            outline: none;
-        }
-        .contact-form input::placeholder,
-        .contact-form textarea::placeholder { color: var(--text-dim); }
-        .contact-form input:focus,
-        .contact-form textarea:focus { border-color: var(--c1); box-shadow: 0 0 18px var(--glow1); }
-        .contact-form textarea { min-height: 130px; resize: vertical; }
-        .contact-form button {
-            background: linear-gradient(135deg, var(--c1), var(--c2));
-            color: #021820;
-            border: none;
-            border-radius: 10px;
-            padding: 14px;
-            font-size: 1rem;
-            font-weight: 700;
-            font-family: 'Syne', sans-serif;
-            cursor: pointer;
-            transition: .25s;
-            letter-spacing: .5px;
-        }
-        .contact-form button:hover { transform: translateY(-2px); box-shadow: 0 0 30px var(--glow1), 0 0 18px var(--glow2); }
-
-        footer {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            padding: 38px 24px;
-            border-top: 1px solid var(--border);
-            color: var(--text-dim);
-            font-size: 0.88rem;
-            margin-top: 60px;
-        }
-        footer span { background: linear-gradient(135deg, var(--c1), var(--c2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600; }
-
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
-        .reveal { opacity: 0; transform: translateY(32px); transition: opacity .65s ease, transform .65s ease; }
+        .reveal { opacity: 0; transform: translateY(30px); transition: 0.8s; }
         .reveal.visible { opacity: 1; transform: translateY(0); }
-
-        .section-divider { position: relative; z-index: 1; width: 100%; height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); max-width: 1100px; margin: 0 auto; }
-
-        @media(max-width:600px){ .nav-links { display: none; } }
     </style>
 </head>
 <body>
 
-<div class="blob blob-1"></div>
-<div class="blob blob-2"></div>
-<div class="blob blob-3"></div>
-
 <nav>
     <div class="nav-logo">UP.</div>
-    <ul class="nav-links">
-        <li><a href="#home">Home</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#achievements">Achievements</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#gallery">Gallery</a></li>
-        <li><a href="#contact">Contact</a></li>
-    </ul>
-    <button class="theme-toggle" onclick="toggleTheme()">☀️ Light</button>
+    <button onclick="toggleTheme()" style="background:none; border:1px solid var(--border); color:var(--text); padding:5px 15px; border-radius:20px; cursor:pointer;">Toggle Theme</button>
 </nav>
 
-<!-- HOME -->
 <section id="home">
-    <div class="profile-wrap">
-        <img src="photo.jpg" alt="Uzair Pathan"
-             onerror="this.src='https://via.placeholder.com/200x200/041520/00e5ff?text=UP';">
-    </div>
-    <div class="home-chip">✦ B.Tech CSE · MIT Vishwaprayag University · 2026</div>
-    <h1 class="home-name">Uzair Pathan</h1>
-    <p class="home-sub">B.Tech CSE · MIT Vishwaprayag University · Class of 2026</p>
-    <p class="home-desc">
-        Engineering student with a passion for AI, chemistry, and programming —
-        building skills at the intersection of technology and real-world problem solving.
-    </p>
-    <div class="home-btns">
-        <a href="#projects" class="btn btn-primary">View Projects</a>
-        <a href="#contact" class="btn btn-outline">Contact Me</a>
-    </div>
-    <div class="home-stats">
-        <div class="stat-item">
-            <div class="stat-num">3+</div>
-            <div class="stat-label">Certificates</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-num">3</div>
-            <div class="stat-label">Projects</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-num">2</div>
-            <div class="stat-label">AI Programs</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-num">2026</div>
-            <div class="stat-label">B.Tech CSE</div>
+    <div style="text-align: center;">
+        <h1 class="section-title" style="font-size: 4rem;">Uzair Pathan</h1>
+        <p style="font-size: 1.2rem; color: var(--text-muted); margin-bottom: 30px;">Engineering Student & AI Tech Enthusiast</p>
+        <div class="home-btns">
+            <a href="#gallery" class="btn btn-primary">View Certificates</a>
+            <a href="resume.pdf" class="btn btn-outline" download>Download CV</a>
         </div>
     </div>
 </section>
 
-<div class="section-divider"></div>
-
-<!-- ABOUT -->
-<section id="about">
-    <h2 class="section-title">About Me</h2>
+<section id="gallery" class="reveal">
+    <h2 class="section-title">Certifications</h2>
     <div class="section-line"></div>
-    <div class="about-grid reveal">
-        <div class="about-text">
-            <p>I'm Uzair Pathan, a B.Tech CSE student at MIT Vishwaprayag University, Solapur. I'm driven by genuine curiosity — wanting to understand not just <em>what</em> technology does, but <em>why</em> it works.</p>
-            <p>That curiosity has taken me through Chemistry, into programming with MATLAB, and now into the world of Artificial Intelligence — where I see the most exciting engineering challenges of our generation unfolding in real time.</p>
-            <p>My goal is to work at the intersection of AI and core engineering — building intelligent, reliable systems that solve real-world problems and make a meaningful impact.</p>
-            <ul class="info-list">
-                <li><span class="label">Name</span><span class="val">Uzair Pathan</span></li>
-                <li><span class="label">Degree</span><span class="val">B.Tech CSE</span></li>
-                <li><span class="label">University</span><span class="val">MIT Vishwaprayag University</span></li>
-                <li><span class="label">Location</span><span class="val">Solapur, Maharashtra</span></li>
-                <li><span class="label">Batch</span><span class="val">Class of 2026</span></li>
-            </ul>
-        </div>
-        <div class="cards-mini">
-            <div class="mini-card">
-                <div class="icon">🎯</div>
-                <h4>Career Goal</h4>
-                <p>AI & engineering roles building intelligent real-world systems.</p>
+    
+    <div class="gallery-grid">
+        <div class="cert-item" onclick="viewCert('cert1.jpg', 'Yuva AI for All')">
+            <div class="cert-img-box">
+                <img src="cert1.jpg" onerror="this.parentElement.classList.add('no-img')">
+                <div class="cert-fallback">
+                    <span style="font-weight:bold; color:var(--c1);">Yuva AI Certificate</span>
+                    <small>Image Not Found</small>
+                </div>
             </div>
-            <div class="mini-card">
-                <div class="icon">🔬</div>
-                <h4>Core Interests</h4>
-                <p>Chemistry, Programming, Artificial Intelligence, MATLAB.</p>
-            </div>
-            <div class="mini-card">
-                <div class="icon">📚</div>
-                <h4>Learning</h4>
-                <p>Advanced AI concepts, programming fundamentals, applied sciences.</p>
-            </div>
-            <div class="mini-card">
-                <div class="icon">🌱</div>
-                <h4>Philosophy</h4>
-                <p>Curiosity is the engine of progress. Every question matters.</p>
+            <div class="cert-info">
+                <h3>Yuva AI for All</h3>
+                <p>NASSCOM FutureSkills Prime</p>
             </div>
         </div>
-    </div>
-</section>
 
-<div class="section-divider"></div>
-
-<!-- ACHIEVEMENTS -->
-<section id="achievements">
-    <h2 class="section-title">Achievements</h2>
-    <div class="section-line"></div>
-
-    <div class="ach-tabs">
-        <button class="ach-tab active" onclick="switchTab(this,'tab-all')">All</button>
-        <button class="ach-tab" onclick="switchTab(this,'tab-ai')">AI Programs</button>
-        <button class="ach-tab" onclick="switchTab(this,'tab-courses')">Courses</button>
-    </div>
-
-    <div id="tab-all" class="ach-panel active reveal">
-        <div class="ach-card">
-            <span class="ach-badge">AI Program</span>
-            <h3>Yuva AI for All</h3>
-            <p>Completed the Yuva AI for All program — a MeitY–NASSCOM Digital Skilling Initiative under NASSCOM FutureSkills Prime. Certified by IT-ITeS SSC NASSCOM (Feb 2026).</p>
-        </div>
-        <div class="ach-card">
-            <span class="ach-badge">Coursera · MIT VU</span>
-            <h3>Revisiting Chemistry: Preparatory Course for ACE-AS1201</h3>
-            <p>Successfully completed this Coursera course authorized by MIT Vishwaprayag University. Covered foundational chemistry concepts including reactions, kinetics, and applied principles (Feb 2026).</p>
-        </div>
-        <div class="ach-card">
-            <span class="ach-badge">Coursera · Vanderbilt</span>
-            <h3>Introduction to Programming with MATLAB</h3>
-            <p>Completed this Coursera course authorized by Vanderbilt University, covering MATLAB programming fundamentals including scripting, data analysis, and computational problem-solving (Dec 2025).</p>
-        </div>
-    </div>
-    <div id="tab-ai" class="ach-panel">
-        <div class="ach-card">
-            <span class="ach-badge">AI Program</span>
-            <h3>Yuva AI for All</h3>
-            <p>Completed the Yuva AI for All program — a MeitY–NASSCOM Digital Skilling Initiative under NASSCOM FutureSkills Prime. Certified by IT-ITeS SSC NASSCOM (Feb 2026).</p>
-        </div>
-    </div>
-    <div id="tab-courses" class="ach-panel">
-        <div class="ach-card">
-            <span class="ach-badge">Coursera · MIT VU</span>
-            <h3>Revisiting Chemistry: Preparatory Course for ACE-AS1201</h3>
-            <p>Successfully completed this Coursera course authorized by MIT Vishwaprayag University (Feb 2026).</p>
-        </div>
-        <div class="ach-card">
-            <span class="ach-badge">Coursera · Vanderbilt</span>
-            <h3>Introduction to Programming with MATLAB</h3>
-            <p>Completed at Vanderbilt University via Coursera — MATLAB programming fundamentals (Dec 2025).</p>
-        </div>
-    </div>
-</section>
-
-<div class="section-divider"></div>
-
-<!-- PROJECTS -->
-<section id="projects">
-    <h2 class="section-title">My Projects</h2>
-    <div class="section-line"></div>
-    <div class="projects-grid reveal">
-        <div class="proj-card">
-            <div class="proj-num">01</div>
-            <span class="proj-tag">MATLAB</span>
-            <h3>MATLAB Programming Exercises</h3>
-            <p>Completed hands-on programming exercises and computational assignments as part of the Vanderbilt University MATLAB course — covering scripting, data visualization, and algorithmic problem-solving.</p>
-            <div class="tech-row">
-                <span class="tech-pill">MATLAB</span>
-                <span class="tech-pill">Scripting</span>
-                <span class="tech-pill">Data Analysis</span>
+        <div class="cert-item" onclick="viewCert('cert2.jpg', 'Revisiting Chemistry')">
+            <div class="cert-img-box">
+                <img src="cert2.jpg" onerror="this.parentElement.classList.add('no-img')">
+                <div class="cert-fallback">
+                    <span style="font-weight:bold; color:var(--c2);">Chemistry Certificate</span>
+                    <small>Image Not Found</small>
+                </div>
+            </div>
+            <div class="cert-info">
+                <h3>Revisiting Chemistry</h3>
+                <p>MIT Vishwaprayag University</p>
             </div>
         </div>
-        <div class="proj-card">
-            <div class="proj-num">02</div>
-            <span class="proj-tag">Chemistry Lab</span>
-            <h3>Chemistry Preparatory Study</h3>
-            <p>Completed the ACE-AS1201 preparatory chemistry course covering reactions, kinetics, thermodynamics, and applied chemical concepts relevant to engineering studies.</p>
-            <div class="tech-row">
-                <span class="tech-pill">Chemical Kinetics</span>
-                <span class="tech-pill">Thermodynamics</span>
-                <span class="tech-pill">Applied Chemistry</span>
+
+        <div class="cert-item" onclick="viewCert('cert3.jpg', 'MATLAB Programming')">
+            <div class="cert-img-box">
+                <img src="cert3.jpg" onerror="this.parentElement.classList.add('no-img')">
+                <div class="cert-fallback">
+                    <span style="font-weight:bold; color:var(--c1);">MATLAB Programming</span>
+                    <small>Image Not Found</small>
+                </div>
             </div>
-        </div>
-        <div class="proj-card">
-            <div class="proj-num">03</div>
-            <span class="proj-tag">AI Research</span>
-            <h3>Yuva AI for All Learning Program</h3>
-            <p>Completed the national AI literacy initiative by NASSCOM FutureSkills Prime, exploring AI applications across industries and developing a foundational understanding of responsible AI adoption.</p>
-            <div class="tech-row">
-                <span class="tech-pill">Artificial Intelligence</span>
-                <span class="tech-pill">AI Ethics</span>
-                <span class="tech-pill">Digital Skilling</span>
+            <div class="cert-info">
+                <h3>Intro to MATLAB</h3>
+                <p>Vanderbilt University</p>
             </div>
         </div>
     </div>
 </section>
 
-<div class="section-divider"></div>
-
-<!-- GALLERY -->
-<section id="gallery">
-    <h2 class="section-title">Gallery & Certificates</h2>
-    <div class="section-line"></div>
-    <div class="gallery-grid reveal">
-        <div class="cert-item" onclick="openLightbox('cert1.pdf')">
-            <img src="cert1.jpg" alt="Yuva AI for All"
-                 onerror="this.src='https://via.placeholder.com/400x178/041520/00e5ff?text=Yuva+AI+for+All';">
-            <div class="cert-label">Yuva AI for All — NASSCOM FutureSkills Prime</div>
-        </div>
-        <div class="cert-item" onclick="openLightbox('cert2.pdf')">
-            <img src="cert2.jpg" alt="Revisiting Chemistry"
-                 onerror="this.src='https://via.placeholder.com/400x178/041520/00ff9d?text=Revisiting+Chemistry';">
-            <div class="cert-label">Revisiting Chemistry — MIT Vishwaprayag / Coursera</div>
-        </div>
-        <div class="cert-item" onclick="openLightbox('cert3.pdf')">
-            <img src="cert3.jpg" alt="Introduction to Programming with MATLAB"
-                 onerror="this.src='https://via.placeholder.com/400x178/041520/00e5ff?text=MATLAB+Programming';">
-            <div class="cert-label">Introduction to Programming with MATLAB — Vanderbilt / Coursera</div>
-        </div>
-    </div>
-</section>
-
-<div class="section-divider"></div>
-
-<!-- CONTACT -->
-<section id="contact">
-    <h2 class="section-title">Contact Me</h2>
-    <div class="section-line"></div>
-    <div class="contact-wrap reveal">
-        <div class="contact-info">
-            <h3>Let's Connect</h3>
-            <p>I'm open to internships, collaborations, and conversations about AI, engineering, and technology. Feel free to reach out!</p>
-            <ul class="contact-items">
-                <li><span class="ci">📍</span> Solapur, Maharashtra, India</li>
-                <li><span class="ci">🎓</span> MIT Vishwaprayag University</li>
-                <li><span class="ci">📅</span> B.Tech CSE · Class of 2026</li>
-                <li><span class="ci">💡</span> Open to Internships & Collaborations</li>
-            </ul>
-        </div>
-        <form class="contact-form" onsubmit="handleSubmit(event)">
-            <input type="text" placeholder="Your Name" required>
-            <input type="email" placeholder="Your Email" required>
-            <input type="text" placeholder="Subject">
-            <textarea placeholder="Your Message" required></textarea>
-            <button type="submit">Send Message ✉</button>
-        </form>
-    </div>
-</section>
-
-<footer>
-    <p>Designed & built by <span>Uzair Pathan</span> · MIT Vishwaprayag University · Class of 2026</p>
-    <p style="margin-top:6px;color:var(--text-dim);">Solapur, Maharashtra, India</p>
-</footer>
-
-<div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLightbox()">
-    <span class="lb-close" onclick="closeLightbox()">×</span>
-    <img id="lbImg" src="" alt="Certificate">
+<div id="lb" class="lightbox" onclick="this.classList.remove('active')">
+    <span class="close-lb">&times;</span>
+    <img id="lb-img" src="">
 </div>
 
 <script>
     function toggleTheme() {
-        const html = document.documentElement;
-        const btn = document.querySelector('.theme-toggle');
-        if (html.dataset.theme === 'dark') {
-            html.dataset.theme = 'light';
-            btn.textContent = '🌙 Dark';
-        } else {
-            html.dataset.theme = 'dark';
-            btn.textContent = '☀️ Light';
-        }
+        const h = document.documentElement;
+        h.setAttribute('data-theme', h.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
     }
-    function openLightbox(src) {
-        document.getElementById('lbImg').src = src;
-        document.getElementById('lightbox').classList.add('open');
+
+    function viewCert(src, title) {
+        const lb = document.getElementById('lb');
+        const img = document.getElementById('lb-img');
+        // If file exists, show it; otherwise, show placeholder in lightbox
+        img.src = src;
+        lb.classList.add('active');
     }
-    function closeLightbox() {
-        document.getElementById('lightbox').classList.remove('open');
-    }
-    document.addEventListener('keydown', e => { if(e.key==='Escape') closeLightbox(); });
-    function switchTab(btn, tabId) {
-        document.querySelectorAll('.ach-tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.ach-panel').forEach(p => p.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById(tabId).classList.add('active');
-    }
+
     const observer = new IntersectionObserver(entries => {
         entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-    function handleSubmit(e) {
-        e.preventDefault();
-        const btn = e.target.querySelector('button');
-        btn.textContent = '✅ Message Sent!';
-        btn.style.background = 'linear-gradient(135deg,#00ff9d,#00e5ff)';
-        setTimeout(() => {
-            btn.textContent = 'Send Message ✉';
-            btn.style.background = '';
-            e.target.reset();
-        }, 3000);
-    }
+    });
+    document.querySelectorAll('.reveal').forEach(r => observer.observe(r));
 </script>
+
 </body>
 </html>
